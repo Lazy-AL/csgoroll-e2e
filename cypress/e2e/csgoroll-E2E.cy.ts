@@ -29,6 +29,19 @@ describe('csgoroll-E2E-test', () => {
     cy.get('@profit').should("contain", `${num.toFixed(2)}`, {timeout: 1000})
   })
 
+  it("Roll under/over switch changes value", () => {
+
+    cy.get('label[data-test="choice-label"]').as('roll')
+    cy.get('button[data-test="choice-switch"]').as('switch')
+
+    cy.get('@switch').click()
+    cy.get('@roll').should('contain', ' Roll ')
+        .should('contain', 'Over')
+
+    cy.get('@switch').click()
+    cy.get('@roll').should('contain', ' Roll ')
+        .should('contain', 'Under')
+  })
 })
 
 
