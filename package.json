@@ -1,0 +1,17 @@
+{
+  "name": "csgoroll",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "cypress open"
+  },
+  "author": "anri lazashvili",
+  "license": "ISC",
+  "devDependencies": {
+    "cypress": "^10.9.0"
+  },
+  "dependencies": {
+    "typescript": "^4.8.4"
+  }
+}
