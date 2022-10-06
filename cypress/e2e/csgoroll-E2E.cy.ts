@@ -57,6 +57,13 @@ describe('csgoroll-E2E-test', () => {
         cy.get('input[data-test="multiplier"]').invoke('val').should('eq', multiplier)
         cy.get('input[data-test="chance"]').invoke('val').should('eq', chance)
     })
+
+    it("Updating inputs makes other inputs update", () => {
+        cy.get('input[data-test="threshold"]').clear().type("16")
+        cy.get('input[data-test="multiplier"]').invoke('val').should('eq', "5.94")
+        cy.get('input[data-test="chance"]').invoke('val').should('eq', "16")
+        cy.get('span[data-cy="value"]').should("contain", "54.34")
+    })
 })
 
 
