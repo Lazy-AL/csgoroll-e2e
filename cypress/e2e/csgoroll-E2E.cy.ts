@@ -64,6 +64,24 @@ describe('csgoroll-E2E-test', () => {
         cy.get('input[data-test="chance"]').invoke('val').should('eq', "16")
         cy.get('span[data-cy="value"]').should("contain", "54.34")
     })
+
+    it("Checking roll count", () => {
+        const moreThanMax = 51
+        const inRange = 35
+        cy.get('[data-test="mode-batch"]').click()
+
+        cy.get('input[data-test="rolls-per-click"]').clear()
+        cy.get('mat-error').should('contain', '1 Min. ')
+        cy.contains(`ROLL ${0} TIMES`).should('be.disabled')
+
+        cy.get('input[data-test="rolls-per-click"]').type(moreThanMax.toString())
+        cy.get('mat-error').should('contain', '50 Max. ')
+        cy.contains(`ROLL ${moreThanMax} TIMES`).should('be.disabled')
+
+        cy.get('input[data-test="rolls-per-click"]').clear().type(inRange.toString())
+        cy.contains(` ROLL ${inRange} TIMES `).should('not.be.disabled')
+
+    })
 })
 
 
