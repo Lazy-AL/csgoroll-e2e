@@ -1,8 +1,6 @@
 import {aliasMutation, hasOperationName} from '../utils/graphql-test-utils'
 
-
 describe('csgoroll-E2E-test', () => {
-
     before(() => {
         cy.visit('/', {
             auth: {username: 'ancient', password: 'things',}
@@ -10,7 +8,7 @@ describe('csgoroll-E2E-test', () => {
     })
 
     beforeEach(() => {
-        cy.intercept('GET', 'https://api-staging.csgoroll.com/graphql?operationName=DiceBets', (req) => {
+        cy.intercept('GET', 'https://api-staging.csgoroll.com/graphql?operationName=DiceBets*', (req) => {
             // Queries
             aliasMutation(req, 'DiceBets')
         })
@@ -92,26 +90,28 @@ describe('csgoroll-E2E-test', () => {
     })
 
 
-    it('should not display the load more button on the launches page', () => {
-        cy.intercept('GET', 'https://api-staging.csgoroll.com/graphql?operationName=DiceBets', (req) => {
+    //
+    //I know that using hard coded variables is not a good practice, however I don't know how does this game works behind the scenes and calculation algorithm. That's the
+    //I chose writing data this way.
+    //
+
+
+    it('', () => {
+        cy.intercept('GET', 'https://api-staging.csgoroll.com/graphql?operationName=DiceBets*', (req) => {
             const {} = req
             if (hasOperationName(req, 'DiceBets')) {
                 // Declare the alias from the initial intercept in the beforeEach
                 req.alias = 'gqlDiceBetsMutation'
-
-
                 // Set req.fixture or use req.reply to modify portions of the response
                 req.reply((res) => {
                     // Modify the response body directly
                     console.log(res.body.data.diceBets)
-
                     res.body.data.diceBets = false
                     // res.body.data.launches.launches =
                     //     res.body.data.launches.launches.slice(5)
                 })
             }
         })
-
         cy.visit('/', {
             auth: {username: 'ancient', password: 'things',}
         });
@@ -120,10 +120,13 @@ describe('csgoroll-E2E-test', () => {
             .should((launches) => {
                 expect(launches.length).to.be.eq(0)
             })
-
-        // cy.get('#launch-list').its('length').should('be.gte', 1).and('be.lt', 20)
-        // cy.contains('button', 'Load More').should('not.exist')
     })
+
+    //I have no previous experience with graphQL, I tried to fit in the time limit that I had to finish the task, but sadly
+    //I was no able to grasp basic concepts of graphQL, this is all I could manage :(
+
+    //if I had more time I would easily complete this task,
+
 
 })
 
