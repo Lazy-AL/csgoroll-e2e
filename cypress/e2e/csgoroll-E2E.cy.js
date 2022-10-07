@@ -1,12 +1,20 @@
+import {aliasMutation, hasOperationName} from '../utils/graphql-test-utils'
+
+
 describe('csgoroll-E2E-test', () => {
-    it('visit the website', () => {
-        // cy.request('')
+
+    before(() => {
         cy.visit('/', {
             auth: {username: 'ancient', password: 'things',}
         });
+    })
 
-    });
-
+    beforeEach(() => {
+        cy.intercept('GET', 'https://api-staging.csgoroll.com/graphql?operationName=DiceBets', (req) => {
+            // Queries
+            aliasMutation(req, 'DiceBets')
+        })
+    })
     it("Bet +1 / +10 / 1/2 / X2 buttons work as expected", () => {
         let num = 0
         cy.get('span[data-cy="value"]').as("profit")
@@ -82,6 +90,41 @@ describe('csgoroll-E2E-test', () => {
         cy.contains(` ROLL ${inRange} TIMES `).should('not.be.disabled')
 
     })
+
+
+    it('should not display the load more button on the launches page', () => {
+        cy.intercept('GET', 'https://api-staging.csgoroll.com/graphql?operationName=DiceBets', (req) => {
+            const {} = req
+            if (hasOperationName(req, 'DiceBets')) {
+                // Declare the alias from the initial intercept in the beforeEach
+                req.alias = 'gqlDiceBetsMutation'
+
+
+                // Set req.fixture or use req.reply to modify portions of the response
+                req.reply((res) => {
+                    // Modify the response body directly
+                    console.log(res.body.data.diceBets)
+
+                    res.body.data.diceBets = false
+                    // res.body.data.launches.launches =
+                    //     res.body.data.launches.launches.slice(5)
+                })
+            }
+        })
+
+        cy.visit('/', {
+            auth: {username: 'ancient', password: 'things',}
+        });
+        cy.wait('@gqlDiceBetsMutation')
+            .its('response.body.data.diceBets.edges')
+            .should((launches) => {
+                expect(launches.length).to.be.eq(0)
+            })
+
+        // cy.get('#launch-list').its('length').should('be.gte', 1).and('be.lt', 20)
+        // cy.contains('button', 'Load More').should('not.exist')
+    })
+
 })
 
 
